@@ -3,42 +3,39 @@ import Animated, {
   withTiming,
   useAnimatedStyle,
   Easing,
+useAnimatedProps,
+  withSpring,withSequence,withRepeat,useAnimatedGestureHandler,
 } from 'react-native-reanimated';
-import {View, Button} from 'react-native';
+import {View, Button,Text,TouchableOpacity} from 'react-native';
 import React from 'react';
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import Svg, { Path,Line } from 'react-native-svg';
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 export default function AnimatedStyleUpdateExample(props) {
-  const randomWidth = useSharedValue(10);
+ 
 
-  const config = {
-    duration: 500,
-    easing: Easing.bezier(0.5, 0.01, 0, 1),
-  };
+  const radius = useSharedValue(150);
 
-  const style = useAnimatedStyle(() => {
+  const animatedProps = useAnimatedProps(() => {
+    // draw a circle
+    const path = `
+    M 100, 200
+    m -${radius.value}, 0
+    a ${radius.value},${radius.value} 0 1,0 ${radius.value * 2},0
+    a ${radius.value},${radius.value} 0 1,0 ${-radius.value * 2},0
+    `;
     return {
-      width: withTiming(randomWidth.value, config),
+      d: path,
     };
   });
 
+
+
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'column',
-      }}>
-      <Animated.View
-        style={[
-          {width: 100, height: 80, backgroundColor: 'black', margin: 30},
-          style,
-        ]}
-      />
-      <Button
-        title="toggle"
-        onPress={() => {
-          randomWidth.value = Math.random() * 350;
-        }}
-      />
-    </View>
+<Svg height="100" width="100">
+  <Line x1="0" y1="0" x2="100" y2="100" stroke="red" strokeWidth="2" />
+</Svg>
   );
+ 
 }
